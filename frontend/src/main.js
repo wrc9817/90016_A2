@@ -7,12 +7,20 @@ import * as icons from '@element-plus/icons-vue'
 
 import router from './router'
 import store from './store'
+import {
+    initRouteGuard
+} from './init/routeGuard'
 
-const app = createApp(App)
-Object.keys(icons).forEach(key => {
-    app.component(key, icons[key])
-})
-app.use(store)
-app.use(router)
-app.use(ElementPlus)
-app.mount('#app')
+function bootStrap(){
+    const app = createApp(App)
+    Object.keys(icons).forEach(key => {
+        app.component(key, icons[key])
+    })
+    app.use(store)
+    app.use(router)
+    app.use(ElementPlus)
+    app.mount('#app')
+    initRouteGuard(router)
+}
+bootStrap()
+

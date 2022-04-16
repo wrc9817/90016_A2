@@ -11,10 +11,12 @@
           </div>
       </div>
       <div class="userInfo-wrapper">
-          <div v-if="true">
+          <div v-if="!isLogin">
               <span class="login clickable" @click="RouterToLogin">LOGIN/SIGNUP</span>
           </div>
-          <div v-else></div>
+          <div v-else>
+              <span class="login clickable" @click="RouterToLogout">{{userName}}</span>
+          </div>
       </div>
   </div>
 </template>
@@ -24,6 +26,18 @@ export default {
 methods:{
     RouterToLogin(){
         this.$router.push('/login')
+    },
+    RouterToLogout(){
+        localStorage.clear()
+        this.$router.push('/login')
+    }
+},
+computed:{
+    isLogin:function(){
+        return localStorage.getItem('isLogin')?true:false
+    },
+    userName:function(){
+        return this.$store.state.userName
     }
 }
 }
