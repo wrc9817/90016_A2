@@ -1,7 +1,22 @@
 <template>
   <router-view/>
 </template>
-
+<script>
+export default {
+  created() {
+    this.init()
+  },
+  methods:{
+    init(){
+      this.$store.replaceState(Object.assign({},this.$store.state,JSON.parse(localStorage.getItem("store"))))
+      window.addEventListener("beforeunload",()=>{
+        localStorage.setItem("store",JSON.stringify(this.$store.state))
+      })
+      this.$store.dispatch("fetchComments")
+    }
+  }
+}
+</script>
 <style>
 body{
   margin:0 !important;

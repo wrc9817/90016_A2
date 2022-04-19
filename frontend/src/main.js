@@ -6,7 +6,7 @@ import 'hover.css'
 import * as icons from '@element-plus/icons-vue'
 
 import router from './router'
-import store from './store'
+import {store} from './store/index'
 import {
     initRouteGuard
 } from './init/routeGuard'

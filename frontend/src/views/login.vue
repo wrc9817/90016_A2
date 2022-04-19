@@ -18,7 +18,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input placeholder="password" v-model="login.password">
+            <el-input placeholder="password" v-model="login.password" show-password>
               <template #prefix>
                 <el-icon class="el-input__icon" :size="16"><key /></el-icon>
               </template>
@@ -53,14 +53,14 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="signUp.password" placeholder="New password">
+            <el-input v-model="signUp.password" placeholder="New password" show-password>
               <template #prefix>
                 <el-icon class="el-input__icon" :size="16"><key /></el-icon>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="confirm">
-            <el-input placeholder="Confirm password" v-model="signUp.confirm">
+            <el-input placeholder="Confirm password" v-model="signUp.confirm" show-password>
               <template #prefix>
                 <el-icon class="el-input__icon" :size="16"><key /></el-icon>
               </template>
@@ -99,8 +99,7 @@ export default {
             trigger: "blur",
           },
           {
-            pattern:
-              /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+            pattern:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
             message: "Not valid email address",
           },
         ],
@@ -125,8 +124,7 @@ export default {
             trigger: "blur",
           },
           {
-            pattern:
-              /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+            pattern:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
             message: "Not valid email address",
           },
         ],
@@ -168,7 +166,7 @@ export default {
         if (valid) {
           instance
             .post("/users", {
-              data: this.form,
+              data: this.signUp,
             })
             .then((res) => {
               if (res.data.status == 200) {
@@ -194,10 +192,11 @@ export default {
             .get("/users", {
               params: this.login,
             })
-            .then((res) => {
+            .then( (res) => {
               if (res.data.status == 200) {
-                this.$router.push("/");
                 localStorage.setItem("isLogin", true);
+                this.$store.commit("handleLogin",res.data.data[0])
+                this.$router.push("/");
                 ElMessage({
                   type: "success",
                   message: res.data.message,
