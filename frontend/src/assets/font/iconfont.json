@@ -1,0 +1,23 @@
+{
+  "id": "3345110",
+  "name": "SWEN90016",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "310125",
+      "name": "pen",
+      "font_class": "pen",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "8327187",
+      "name": "view",
+      "font_class": "view",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    }
+  ]
+}

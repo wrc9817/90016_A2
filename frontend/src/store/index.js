@@ -14,7 +14,15 @@ export const store = createStore({
     profileDialog:false,
     comments:null,
     commentId:null,
-    newCommentDialog:false
+    newCommentDialog:false,
+    commentDetail:{
+      title:null,
+      time:null,
+      content:null,
+      author:null,
+      like_count:null,
+      views:null,
+    },
   },
   getters: {
   },
@@ -44,6 +52,9 @@ export const store = createStore({
     },
     handleEnterComment(state,payload){
       state.commentId = payload
+    },
+    handleCommentDetail(state,payload){
+      state.commentDetail = payload
     }
   },
   actions: {

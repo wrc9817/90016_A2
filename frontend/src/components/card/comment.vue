@@ -78,7 +78,7 @@ export default {
   margin-bottom: 10px;
   text-align: left;
   padding: 8px;
-  width: 70%;
+  width: 100%;
 }
 
 .title {

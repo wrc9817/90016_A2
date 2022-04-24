@@ -2,9 +2,15 @@
   <router-view/>
 </template>
 <script>
+import instance from './utils/index'
 export default {
   created() {
     this.init()
+  },
+  computed:{
+    commentId:function(){
+      return this.$store.state.commentId
+    }
   },
   methods:{
     init(){
@@ -13,6 +19,33 @@ export default {
         localStorage.setItem("store",JSON.stringify(this.$store.state))
       })
       this.$store.dispatch("fetchComments")
+    },
+    fetchcommentAndReply(){
+      var params = {
+        commentId:this.commentId
+      }
+      instance
+      .get('/comments/detail',{
+        params:params
+      })
+      .then((res)=>{
+        this.$store.commit("handleCommentDetail",res.data.data)
+      })
+    }
+  },
+  watch:{
+    $route(to,from){
+      if(to.path=='/detail'){
+        this.fetchcommentAndReply()
+      }
+    },
+    "$store.state.userInfo.id":{
+      deep:true,
+      handler:function(newVal,oldVal){
+        if(newVal){
+          this.$store.dispatch("fetchComments")
+        }
+      }
     }
   }
 }

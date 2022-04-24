@@ -195,7 +195,8 @@ export default {
             .then( (res) => {
               if (res.data.status == 200) {
                 localStorage.setItem("isLogin", true);
-                this.$store.commit("handleLogin",res.data.data[0])
+                this.$store.commit("handleLogin",res.data.data)
+                console.log(res.data.data);
                 this.$router.push("/");
                 ElMessage({
                   type: "success",

@@ -2,64 +2,66 @@ var express = require("express");
 var querySQL = require("../database/index");
 var router = express.Router();
 
+
+
 function pullAllComments(msg, res, param) {
-  if(param.userId){
-  new Promise((resolve, reject) => {
-    var sql = "SELECT * FROM A2.comment;";
-    querySQL(sql, (e) => {
-      if (e) {
-        resolve(e);
-      } else {
-        res.send({
-          message: "error",
-          status: -1,
-        });
-      }
-    });
-  }).then((result) => {
-    var sql = "SELECT * FROM A2.like WHERE userId=" + param.userId + ";";
-    querySQL(sql, (e) => {
-      if (e) {
-        // console.log("comments",result);
-        // console.log("like",e);
-        if (e.length > 0) {
-          for (var i in result) {
-            var row = result[i];
-            for (var j in e) {
-              var erow = e[j];
-              if (row.id == erow.commentId) {
-                result[i]["isLiked"] = true;
-                break
-              } else {
-                result[i]["isLiked"] = false;
+  if (param.userId) {
+    new Promise((resolve, reject) => {
+      var sql = "SELECT * FROM A2.comment ORDER BY time desc;";
+      querySQL(sql, (e) => {
+        if (e) {
+          resolve(e);
+        } else {
+          res.send({
+            message: "error",
+            status: -1,
+          });
+        }
+      });
+    }).then((result) => {
+      var sql = "SELECT * FROM A2.like WHERE userId=" + param.userId + ";";
+      querySQL(sql, (e) => {
+        if (e) {
+          // console.log("comments",result);
+          // console.log("like",e);
+          if (e.length > 0) {
+            for (var i in result) {
+              var row = result[i];
+              for (var j in e) {
+                var erow = e[j];
+                if (row.id == erow.commentId) {
+                  result[i]["isLiked"] = true;
+                  break;
+                } else {
+                  result[i]["isLiked"] = false;
+                }
               }
             }
+          } else {
+            for (var i in result) {
+              result[i]["isLiked"] = false;
+            }
           }
-        }else{
-          for(var i in result){
-            result[i]["isLiked"] = false
-          }
+          res.send({
+            message: msg,
+            status: 200,
+            data: result,
+          });
+        }
+      });
+    });
+  } else {
+    var sql = "SELECT * FROM A2.comment ORDER BY time desc;";
+    querySQL(sql, (e) => {
+      if (e) {
+        for (var i in e) {
+          e[i]["isLiked"] = false;
         }
         res.send({
           message: msg,
           status: 200,
-          data: result,
-        });
-      }
-    });
-  });
-}else{
-  var sql = "SELECT * FROM A2.comment;";
-    querySQL(sql, (e) => {
-      if (e) {
-        for(var i in e){
-          e[i]["isLiked"] = false
-        }   
-        res.send({
-          message: msg,
-          status: 200,
           data: e,
-        });  
+        });
       } else {
         res.send({
           message: "error",
@@ -67,10 +69,10 @@ function pullAllComments(msg, res, param) {
         });
       }
     });
+  }
 }
-}
-// 注册
-router.get("/", function (req, res, next) {
+
+router.get("/" ,function (req, res, next) {
   var param = req.query;
   pullAllComments("", res, param);
 });
@@ -163,7 +165,10 @@ router.put("/like", function (req, res, next) {
         pullAllComments("", res, param);
       })
       .catch((e) => {
-        console.log("error: ", e);
+        res.send({
+          message: "error",
+          status: -1,
+        });
       });
   } else {
     new Promise((resolve, reject) => {
@@ -187,7 +192,6 @@ router.put("/like", function (req, res, next) {
           param.commentId +
           ";";
         querySQL(sql, (e) => {
-          console.log("eeeee",e);
           if (!e) {
             throw "UPDATE Error";
           }
@@ -195,8 +199,62 @@ router.put("/like", function (req, res, next) {
       })
       .then(() => {
         pullAllComments("", res, param);
+      })
+      .catch((e) => {
+        res.send({
+          message: "error",
+          status: -1,
+        });
       });
   }
 });
-
+router.get("/detail", (req, res, next) => {
+  var param = req.query;
+  new Promise((resolve, reject) => {
+    var sql = "SELECT * FROM A2.comment WHERE id=" + param.commentId + ";";
+    querySQL(sql, (e) => {
+      if (e) {
+        resolve(e);
+      } else {
+        reject();
+      }
+    });
+  })
+    .then((result) => {
+      return new Promise((resolve, reject) => {
+        var sql =
+          "UPDATE A2.comment SET views = views + 1 WHERE id =" +
+          param.commentId +
+          ";";
+        querySQL(sql, (e) => {
+          if (!e) {
+            throw "UPDATE Error";
+          } else {
+            resolve(result);
+          }
+        });
+      });
+    })
+    .then((result) => {
+      console.log("result", result);
+      var sql =
+        "SELECT * FROM A2.reply WHERE commentId=" + param.commentId + ";";
+      querySQL(sql, (e) => {
+        if (e) {
+          result[0].reply = e;
+          res.send({
+            data: result[0],
+            message: "",
+            status: 200,
+          });
+        }
+      });
+    })
+    .catch((e) => {
+      res.send({
+        message: "error",
+        status: -1,
+      });
+    });
+});
 module.exports = router;

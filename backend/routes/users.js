@@ -3,8 +3,52 @@ var express = require('express');
 var querySQL = require('../database/index')
 var query = require('../database/sql')
 var sendMsg = require('../nodemailer/index')
+var multer = require('multer')
+var upload = multer({ dest: 'public/upload/' });
 var router = express.Router();
 
+
+router.post('/avatar',upload.single("avatar"),(req,res,next)=>{
+  var param = req.body
+  console.log(param,req.file);
+  var sql = "UPDATE A2.User SET avatar = "+"'http://localhost:8099/"+req.file.path.split("public/")[1]+"' WHERE id="+param.userId+";"
+  new Promise((resolve,reject)=>{
+    querySQL(sql,(e)=>{
+      if(e){
+        resolve()
+      }else{
+        reject()
+      }
+    })
+  })
+  .then((result)=>{
+    var sql = "SELECT * FROM A2.User WHERE id = "+param.userId+";"
+    querySQL(sql,(e)=>{
+      if(e){
+        console.log(e);
+        res.send({
+          data:e[0],
+          message:'Update successfully!',
+          status:200
+      });
+      }else{
+        throw "SELECT Error"
+      }
+    })
+  })
+  .catch((e)=>{
+    res.send({
+      message:'error',
+      status:-1
+    })
+  })
+  
+  // res.sendFile({
+  //   message:"",
+  //   status:200,
+  //   data:req.file.filename
+  // })
+})
 // 注册
 router.post('/',  function(req, res, next) {
   var param = req.body.data
@@ -58,7 +102,7 @@ router.get('/', function(req, res, next) {
     if(e){
       console.log(e);
       res.send({
-        data:e,
+        data:e[0],
         message:'Login successfully!',
         status:200
     });
@@ -93,7 +137,7 @@ router.put('/', function(req, res, next) {
       if(e){
         console.log(e);
         res.send({
-          data:e,
+          data:e[0],
           message:'Update successfully!',
           status:200
       });

@@ -81,6 +81,7 @@ export default {
       this.$refs["comment"].validate((valid) => {
         if (valid) {
           var param = {
+            userId:this.userId,
             ...this.comment,
             authorId: this.userId,
             authorName:this.email
