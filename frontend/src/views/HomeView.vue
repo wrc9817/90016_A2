@@ -76,12 +76,15 @@ export default {
     isLogin: function () {
       return localStorage.getItem("isLogin");
     },
+    isAdmin:function(){
+      return this.$store.state.userInfo.isAdmin
+    },
     comments: function () {
       this.viewMoreCount =
         this.$store.state.comments.length < 4
           ? this.$store.state.comments.length
           : 4;
-      return this.$store.state.comments;
+        return this.$store.state.comments;
     },
   },
   methods: {

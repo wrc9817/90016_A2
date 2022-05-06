@@ -12,7 +12,7 @@
           placement="bottom"
           :show-arrow="false"
           :width="100"
-          trigger="click"
+          trigger="hover"
         >
           <template #reference>
             <span class="login clickable">{{ userName }}</span>
@@ -20,10 +20,18 @@
           <template #default>
             <div>
               <div
+                v-if="!isAdmin"
                 class="clickable text-centered userMenuItem"
                 @click="handleOpenProfile"
               >
                 <el-icon class="icon"><setting /></el-icon> Setting
+              </div>
+              <div
+                v-if="isAdmin"
+                class="clickable text-centered userMenuItem"
+                @click="RouterToOpenAudit"
+              >
+                <el-icon class="icon"><checked /></el-icon> Manage User
               </div>
               <div
                 class="clickable text-centered userMenuItem"
@@ -37,24 +45,30 @@
       </div>
     </el-col>
     <el-col :span="2" class="post">
-      <span class="item clickable" @click="handleOpenNewCommentDialog">
+      <span v-if="!isAdmin" class="item clickable" @click="handleOpenNewCommentDialog">
         <span class="iconfont">&#xe617;</span> POST
       </span>
     </el-col>
     <Profile></Profile>
     <NewComment></NewComment>
+    <Audit></Audit>
   </el-row>
 </template>
 
 <script>
 import Profile from "../dialog/profile.vue";
 import NewComment from "../dialog/newComment.vue";
+import Audit from '../dialog/audit.vue'
 export default {
   components: {
     Profile,
     NewComment,
+    Audit
   },
   methods: {
+    RouterToOpenAudit(){
+      this.$store.commit('handleOpenAudit',true)
+    },
     handleHome() {
       this.$router.push("/");
     },
@@ -74,6 +88,9 @@ export default {
     },
   },
   computed: {
+    isAdmin:function(){
+      return this.$store.state.userInfo.isAdmin
+    },  
     isLogin: function () {
       return localStorage.getItem("isLogin") ? true : false;
     },
@@ -100,7 +117,7 @@ export default {
 .header {
   background: black;
   align-items: center;
-  color: white;
+  color: grey;
   font-size: 16px;
   padding: 10px 0;
   letter-spacing: 1px;
@@ -126,5 +143,15 @@ export default {
 }
 .icon {
   padding: 0 5px;
+}
+.home{
+  color:white;
+}
+.login:hover{
+color:white;
+}
+
+.post:hover{
+  color:white;
 }
 </style>

@@ -37,16 +37,9 @@ export default {
     $route(to,from){
       if(to.path=='/detail'){
         this.fetchcommentAndReply()
+        this.$store.dispatch("fetchReplies")
       }
     },
-    "$store.state.userInfo.id":{
-      deep:true,
-      handler:function(newVal,oldVal){
-        if(newVal){
-          this.$store.dispatch("fetchComments")
-        }
-      }
-    }
   }
 }
 </script>
@@ -75,7 +68,13 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 
+.clickable{
+    transition: color 0.25s linear;
+
+}
 .clickable:hover{
   cursor: pointer;
+    transition: color 0.25s linear;
+
 }
 </style>

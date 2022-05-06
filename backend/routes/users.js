@@ -97,15 +97,20 @@ router.post('/',  function(req, res, next) {
 // 登录
 router.get('/', function(req, res, next) {
   var param = req.query
-  var sql = "SELECT * FROM User WHERE email = '"+param.email+"' AND password='"+param.password+"';"
+  var sql = "SELECT * FROM User WHERE email = '"+param.email+"' AND password='"+param.password+"' AND isActive = 1;"
   querySQL(sql,(e)=>{
-    if(e){
-      console.log(e);
+    if(e && e.length>0){
+      e[0].isAdmin = e[0].isAdmin==1?true:false
       res.send({
         data:e[0],
         message:'Login successfully!',
         status:200
     });
+    }else if(e.length==0){
+      res.send({
+        message:'Your account has been blocked',
+        status:0
+      })
     }else{
       res.send({
         message:'error',
@@ -135,7 +140,6 @@ router.put('/', function(req, res, next) {
     var sql = "SELECT * FROM User WHERE email = '"+param.email+"';"
     querySQL(sql,(e)=>{
       if(e){
-        console.log(e);
         res.send({
           data:e[0],
           message:'Update successfully!',
@@ -151,5 +155,84 @@ router.put('/', function(req, res, next) {
   })
   
 });
+router.get('/all',(req,res,next)=>{
+  var sql = "SELECT * FROM A2.User"
+  querySQL(sql,(e)=>{
+    if(e){
+      res.send({
+        status:200,
+        data:e,
+        msg:""
+      })
+    }else{
+      res.send({
+        status:-1,
+        msg:"error"
+      })
+    }
+  })
+})
+router.put('/block',(req,res,next)=>{
+  var param = req.body.data
+  new Promise((resolve,reject)=>{
+    var sql = "UPDATE A2.User SET isActive = 0 WHERE id="+param.userId+";"
+  querySQL(sql,(e)=>{
+    if(e){
+      resolve()
+    }else{
+      reject()
+    }
+  })
+  })
+  .then((e)=>{
+    var sql = "SELECT * FROM A2.User"
+    querySQL(sql,(e)=>{
+    if(e){
+      res.send({
+        status:200,
+        message:"An user has been blocked",
+        data:e
+      })
+    }else{
+      res.send({
+        status:-1,
+        msg:"error"
+      })
+    }
+  })
+  })
+  
+})
 
+router.put('/active',(req,res,next)=>{
+  var param = req.body.data
+  new Promise((resolve,reject)=>{
+    var sql = "UPDATE A2.User SET isActive = 1 WHERE id="+param.userId+";"
+  querySQL(sql,(e)=>{
+    if(e){
+      resolve()
+    }else{
+      reject()
+    }
+  })
+  })
+  .then((e)=>{
+    var sql = "SELECT * FROM A2.User"
+    querySQL(sql,(e)=>{
+    if(e){
+      res.send({
+        status:200,
+        message:"An user has been blocked",
+        data:e
+      })
+    }else{
+      res.send({
+        status:-1,
+        msg:"error"
+      })
+    }
+  })
+  })
+  
+})
 module.exports = router;

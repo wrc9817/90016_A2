@@ -2,12 +2,16 @@ var express = require("express");
 var querySQL = require("../database/index");
 var router = express.Router();
 
-
-
 function pullAllComments(msg, res, param) {
   if (param.userId) {
     new Promise((resolve, reject) => {
-      var sql = "SELECT * FROM A2.comment ORDER BY time desc;";
+      var sql;
+      console.log(param.userId);
+      if(param.userId=="0"){
+        sql = "SELECT * FROM A2.comment ORDER BY time desc;"
+      }else{
+        sql = "SELECT * FROM A2.comment WHERE enabled = 1 ORDER BY time desc;"
+      }
       querySQL(sql, (e) => {
         if (e) {
           resolve(e);
@@ -72,7 +76,7 @@ function pullAllComments(msg, res, param) {
   }
 }
 
-router.get("/" ,function (req, res, next) {
+router.get("/", function (req, res, next) {
   var param = req.query;
   pullAllComments("", res, param);
 });
@@ -106,7 +110,7 @@ router.post("/", function (req, res, next) {
   var curTime = getNowDate();
   new Promise(function (resolve, reject) {
     var sql =
-      "INSERT INTO `A2`.`comment` (`content`, `title`,`time`,`authorId`,`author`) VALUES ('" +
+      "INSERT INTO `A2`.`comment` (`content`, `title`,`time`,`authorId`,`author`,`avatar`) VALUES ('" +
       param.content +
       "', '" +
       param.title +
@@ -116,6 +120,8 @@ router.post("/", function (req, res, next) {
       param.authorId +
       ",'" +
       param.authorName +
+      "','" +
+      param.avatar +
       "');";
     querySQL(sql, (e) => {
       if (e) {
@@ -257,4 +263,22 @@ router.get("/detail", (req, res, next) => {
       });
     });
 });
+
+router.put('/enabled',(req,res,next)=>{
+  var param = req.body.data;
+  new Promise((resolve,reject)=>{
+    var sql = "UPDATE A2.comment SET enabled = "+param.enabled+" WHERE id = " +param.commentId +";";
+    querySQL(sql,(e)=>{
+      if(e){
+        resolve()
+      }else{
+        reject()
+      }
+    })
+  })
+  .then((e)=>{
+    pullAllComments("", res, param);
+  })
+  
+})
 module.exports = router;

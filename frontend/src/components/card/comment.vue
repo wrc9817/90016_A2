@@ -1,5 +1,14 @@
 <template>
   <el-card class="box-card">
+    <el-checkbox
+      v-if="isAdmin"
+      v-model="commentInfo.enabled"
+      :true-label="1"
+      :false-label="0"
+      class="enabled"
+      border
+      @change="handleEnabled"
+    ></el-checkbox>
     <div class="header">
       <div class="title clickable" @click="handleOpenDetail">
         {{ commentInfo.title }}
@@ -35,6 +44,11 @@ export default {
       type: Object,
     },
   },
+  data() {
+    return {
+      check: "true",
+    };
+  },
   computed: {
     userId: function () {
       return this.$store.state.userInfo.id;
@@ -42,15 +56,20 @@ export default {
     isLogin: function () {
       return localStorage.getItem("isLogin");
     },
+    isAdmin: function () {
+      return this.$store.state.userInfo.isAdmin;
+    },
   },
   methods: {
     convertUTC: helperApi.ConvertUTC,
     handleOpenDetail() {
-     this.$store.commit("handleEnterComment",this.commentInfo.id)
-     this.$router.push("/detail")
+      if (!this.isAdmin) {
+        this.$store.commit("handleEnterComment", this.commentInfo.id);
+        this.$router.push("/detail");
+      }
     },
     handleLike() {
-      if (this.isLogin) {
+      if (this.isLogin && !this.isAdmin) {
         var params = {
           userId: this.userId,
           commentId: this.commentInfo.id,
@@ -69,12 +88,28 @@ export default {
         this.$router.push("/login");
       }
     },
+    handleEnabled(val) {
+      var params = {
+        enabled: val == true ? 1 : 0,
+        commentId: this.commentInfo.id,
+      };
+      instance
+        .put("/comments/enabled", {
+          data: params,
+        })
+        .then((res) => {
+          if (res.data.status == 200) {
+            this.$store.commit("handleComments", res.data.data);
+          }
+        });
+    },
   },
 };
 </script>
 
 <style scoped>
 .box-card {
+  position: relative;
   margin-bottom: 10px;
   text-align: left;
   padding: 8px;
@@ -142,5 +177,13 @@ export default {
 }
 .comment:hover {
   color: black;
+}
+.enabled {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.el-checkbox.is-bordered {
+  padding: 0 9px 0 9px;
 }
 </style>

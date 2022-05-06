@@ -23,12 +23,14 @@ export const store = createStore({
       like_count:null,
       views:null,
     },
+    replies:[],
+    audit:false,
   },
   getters: {
   },
   mutations: {
     handleLogin(state,payload){
-      state.userInfo = payload
+      state.userInfo = payload      
     },
     handleLogout(state,payload){
       state.userInfo = {
@@ -55,6 +57,12 @@ export const store = createStore({
     },
     handleCommentDetail(state,payload){
       state.commentDetail = payload
+    },
+    handleReplies(state,payload){
+      state.replies = payload
+    },
+    handleOpenAudit(state,payload){
+      state.audit = payload
     }
   },
   actions: {
@@ -72,6 +80,22 @@ export const store = createStore({
         if(res.data.status==200){
           commit("handleComments",res.data.data);
         }
+      })
+    },
+    fetchReplies({
+      state,commit
+    }){
+      var params = {
+        commentId:state.commentId
+      }
+      instance.get('/reply',{
+        params
+      })
+      .then((res)=>{
+        if(res.data.status==200){
+          commit("handleReplies",res.data.data)
+        }
+        
       })
     }
   },

@@ -74,6 +74,9 @@ export default {
     },
     email:function(){
       return this.$store.state.userInfo.email
+    },
+    avatar:function(){
+      return this.$store.state.userInfo.avatar
     }
   },
   methods: {
@@ -84,7 +87,8 @@ export default {
             userId:this.userId,
             ...this.comment,
             authorId: this.userId,
-            authorName:this.email
+            authorName:this.email,
+            avatar:this.avatar
           };
           instance
             .post("/comments", {

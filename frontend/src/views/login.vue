@@ -3,7 +3,7 @@
     <el-card class="card">
       <div v-if="!isSignUp">
         <div class="title">Sign In</div>
-        <el-form
+        <el-form 
           class="form"
           status-icon
           :rules="loginRules"
@@ -11,14 +11,14 @@
           ref="loginForm"
         >
           <el-form-item prop="email">
-            <el-input placeholder="Email" v-model="login.email">
+            <el-input placeholder="Email" v-model="login.email" autocomplete="true">
               <template #prefix>
                 <el-icon class="el-input__icon" :size="16"><message /></el-icon>
               </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input placeholder="password" v-model="login.password" show-password>
+            <el-input placeholder="password" v-model="login.password" show-password autocomplete="true">
               <template #prefix>
                 <el-icon class="el-input__icon" :size="16"><key /></el-icon>
               </template>
@@ -99,8 +99,9 @@ export default {
             trigger: "blur",
           },
           {
-            pattern:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+            pattern:/^(([A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$)|admin)/,
             message: "Not valid email address",
+            trigger: "blur",
           },
         ],
         password: [
@@ -124,8 +125,9 @@ export default {
             trigger: "blur",
           },
           {
-            pattern:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+            pattern:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/ ,
             message: "Not valid email address",
+            trigger: "blur",
           },
         ],
         password: [
@@ -142,13 +144,19 @@ export default {
             trigger: "blur",
           },
           {
-              validator:this.confirmValidator
+              validator:this.confirmValidator,
+              trigger: "blur",
           }
         ],
       },
     };
   },
   methods: {
+    adminValidator(rule, value, callback){
+      if (value === "admin") {
+        callback();
+      }
+    },
     confirmValidator(rule, value, callback) {
       if (value === "") {
         callback(new Error("请再次输入密码"));
@@ -196,10 +204,15 @@ export default {
               if (res.data.status == 200) {
                 localStorage.setItem("isLogin", true);
                 this.$store.commit("handleLogin",res.data.data)
-                console.log(res.data.data);
+                this.$store.dispatch("fetchComments")
                 this.$router.push("/");
                 ElMessage({
                   type: "success",
+                  message: res.data.message,
+                });
+              }else{
+                ElMessage({
+                  type: "error",
                   message: res.data.message,
                 });
               }
@@ -219,6 +232,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 </style>
 <style scoped>
 .login-page {
