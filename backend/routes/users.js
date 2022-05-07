@@ -1,7 +1,6 @@
 
 var express = require('express');
 var querySQL = require('../database/index')
-var query = require('../database/sql')
 var sendMsg = require('../nodemailer/index')
 var multer = require('multer')
 var upload = multer({ dest: 'public/upload/' });
