@@ -10,6 +10,7 @@ export const store = createStore({
       location:null,
       first_name:null,
       last_name:null,
+      isAdmin:false,
     },
     profileDialog:false,
     comments:null,
@@ -70,7 +71,8 @@ export const store = createStore({
       state,commit
     }){
       var params = {
-        userId:state.userInfo.id
+        userId:state.userInfo.id,
+        isAdmin:state.userInfo.isAdmin
       }
       instance
       .get('/comments',{
@@ -86,7 +88,7 @@ export const store = createStore({
       state,commit
     }){
       var params = {
-        commentId:state.commentId
+        commentId:state.commentId,
       }
       instance.get('/reply',{
         params

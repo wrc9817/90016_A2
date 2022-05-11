@@ -84,12 +84,16 @@ export default {
       this.$store.commit("handleOpenProfile", true);
     },
     handleOpenNewCommentDialog() {
-      this.newCommentDialog = true;
+      if(this.isLogin){
+        this.newCommentDialog = true;
+      }else{
+        this.RouterToLogin()
+      }
     },
   },
   computed: {
     isAdmin:function(){
-      return this.$store.state.userInfo.isAdmin
+      return this.$store.state.userInfo.isAdmin==1?true:false;
     },  
     isLogin: function () {
       return localStorage.getItem("isLogin") ? true : false;

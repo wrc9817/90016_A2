@@ -28,14 +28,15 @@ app.all('*',function(req,res,next){
   req.method == "OPTIONS" ? res.send(200) : next()
 })
 // app.use('/', indexRouter);
+var history = require('connect-history-api-fallback');
+app.use(express.static(path.join(__dirname, './dist')));
+app.use(history());
 app.use('/users', usersRouter);
 app.use('/comments',commentsRouter)
 app.use('/reply',replyRounter)
 
 
-var history = require('connect-history-api-fallback');
-app.use(express.static(path.join(__dirname, 'dist')));
-app.use(history());
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -99,7 +99,6 @@ router.get('/', function(req, res, next) {
   var sql = "SELECT * FROM User WHERE email = '"+param.email+"' AND password='"+param.password+"' AND isActive = 1;"
   querySQL(sql,(e)=>{
     if(e && e.length>0){
-      e[0].isAdmin = e[0].isAdmin==1?true:false
       res.send({
         data:e[0],
         message:'Login successfully!',

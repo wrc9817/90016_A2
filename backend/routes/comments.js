@@ -3,18 +3,15 @@ var querySQL = require("../database/index");
 var router = express.Router();
 
 function pullAllComments(msg, res, param) {
-  if (param.userId) {
-    new Promise((resolve, reject) => {
-      var sql;
-      console.log(param.userId);
-      if(param.userId=="0"){
-        sql = "SELECT * FROM A2.comment ORDER BY time desc;"
-      }else{
-        sql = "SELECT * FROM A2.comment WHERE enabled = 1 ORDER BY time desc;"
-      }
+  if (param.isAdmin==1) {
+    var sql = "SELECT * FROM A2.comment ORDER BY time desc;";
       querySQL(sql, (e) => {
         if (e) {
-          resolve(e);
+          res.send({
+            message: msg,
+            status: 200,
+            data: e,
+          });
         } else {
           res.send({
             message: "error",
@@ -22,45 +19,22 @@ function pullAllComments(msg, res, param) {
           });
         }
       });
-    }).then((result) => {
-      var sql = "SELECT * FROM A2.like WHERE userId=" + param.userId + ";";
-      querySQL(sql, (e) => {
-        if (e) {
-          // console.log("comments",result);
-          // console.log("like",e);
-          if (e.length > 0) {
-            for (var i in result) {
-              var row = result[i];
-              for (var j in e) {
-                var erow = e[j];
-                if (row.id == erow.commentId) {
-                  result[i]["isLiked"] = true;
-                  break;
-                } else {
-                  result[i]["isLiked"] = false;
-                }
-              }
-            }
-          } else {
-            for (var i in result) {
-              result[i]["isLiked"] = false;
-            }
-          }
-          res.send({
-            message: msg,
-            status: 200,
-            data: result,
-          });
-        }
-      });
-    });
   } else {
-    var sql = "SELECT * FROM A2.comment ORDER BY time desc;";
+    var  sql = param.userId?
+    `
+    SELECT c.*,IF(l.userId,1,0) as isLiked
+    FROM A2.comment AS c LEFT JOIN (SELECT * FROM A2.like WHERE userId =`+param.userId+`) as l ON c.id = l.commentId
+    WHERE c.enabled = 1
+    ORDER BY time desc;
+    `:
+    `
+    SELECT *
+    FROM A2.comment
+    WHERE enabled = 1
+    ORDER BY time desc;
+    `
     querySQL(sql, (e) => {
       if (e) {
-        for (var i in e) {
-          e[i]["isLiked"] = false;
-        }
         res.send({
           message: msg,
           status: 200,

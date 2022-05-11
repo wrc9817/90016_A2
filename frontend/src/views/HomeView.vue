@@ -2,7 +2,7 @@
   <el-row justify="center" class="body">
     <el-col :span="18">
       <div class="carousel-pic">
-        <el-carousel
+        <!-- <el-carousel
           indicator-position="outside"
           :interval="4000"
           type="card"
@@ -11,11 +11,11 @@
           <el-carousel-item v-for="item in videoList" :key="item">
             <img :src="item" class="img" />
           </el-carousel-item>
-        </el-carousel>
+        </el-carousel> -->
       </div>
       <div class="video"></div>
       <el-row class="comments" :gutter="40">
-        <el-col :span="16">
+        <el-col :span="16" v-if="comments">
           <Comment
             v-for="(item, index) in viewMoreCount"
             :key="index"
@@ -77,11 +77,11 @@ export default {
       return localStorage.getItem("isLogin");
     },
     isAdmin:function(){
-      return this.$store.state.userInfo.isAdmin
+      return this.$store.state.userInfo.isAdmin==1?true:false
     },
     comments: function () {
       this.viewMoreCount =
-        this.$store.state.comments.length < 4
+        this.$store.state.comments && this.$store.state.comments.length < 4
           ? this.$store.state.comments.length
           : 4;
         return this.$store.state.comments;

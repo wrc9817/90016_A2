@@ -57,7 +57,7 @@ export default {
       return localStorage.getItem("isLogin");
     },
     isAdmin: function () {
-      return this.$store.state.userInfo.isAdmin;
+      return this.$store.state.userInfo.isAdmin==1?true:false;
     },
   },
   methods: {
@@ -92,6 +92,7 @@ export default {
       var params = {
         enabled: val == true ? 1 : 0,
         commentId: this.commentInfo.id,
+        isAdmin:this.isAdmin
       };
       instance
         .put("/comments/enabled", {

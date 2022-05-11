@@ -15,7 +15,7 @@ export default {
   methods:{
     init(){
       this.$store.replaceState(Object.assign({},this.$store.state,JSON.parse(localStorage.getItem("store"))))
-      window.addEventListener("beforeunload",()=>{
+      window.addEventListener("load",()=>{
         localStorage.setItem("store",JSON.stringify(this.$store.state))
       })
       this.$store.dispatch("fetchComments")
