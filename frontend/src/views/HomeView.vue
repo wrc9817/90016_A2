@@ -2,7 +2,7 @@
   <el-row justify="center" class="body">
     <el-col :span="18">
       <div class="carousel-pic">
-        <!-- <el-carousel
+        <el-carousel
           indicator-position="outside"
           :interval="4000"
           type="card"
@@ -11,7 +11,7 @@
           <el-carousel-item v-for="item in videoList" :key="item">
             <img :src="item" class="img" />
           </el-carousel-item>
-        </el-carousel> -->
+        </el-carousel>
       </div>
       <div class="video"></div>
       <el-row class="comments" :gutter="40">
@@ -38,7 +38,7 @@
         </el-col>
         <el-col :span="8">
           <el-card class="menu-wrapper"> 
-          <div class="clickable menu-item" v-for="item in characteristic" :key="item">{{item}}</div>
+          <div class="clickable menu-item" v-for="item,index in characteristic" :key="item" @click="handleEnterFeature(index+1)">{{item}}</div>
           </el-card>
         </el-col>
       </el-row>
@@ -58,17 +58,22 @@ export default {
       viewMoreCount: 1,
       showViewMore: true,
       videoList: [
-        require("../assets/img/animal.jpg"),
-        require("../assets/img/animal2.jpg"),
-        require("../assets/img/animal3.jpg"),
+        require("../assets/img/1.jpg"),
+        require("../assets/img/2.jpg"),
+        require("../assets/img/3.jpg"),
+        require("../assets/img/4.jpg"),
+        require("../assets/img/5.jpg"),
+        require("../assets/img/6.jpg"),
+        require("../assets/img/7.jpg"),
+        require("../assets/img/8.jpg"),
       ],
       characteristic: [
-        "feature1",
-        "feature2",
-        "feature3",
-        "feature4",
-        "feature5",
-        "feature6",
+        "Giant Panda’s habits",
+        "Wild distribution of giant pandas",
+        "How to feed in the zoo",
+        "Reasons of population decline",
+        "Giant panda breeding",
+        "Solitary or herd preferences",
       ],
     };
   },
@@ -99,6 +104,14 @@ export default {
     handleToLogin() {
       this.$router.push("/login");
     },
+    handleEnterFeature(index){
+      if(this.isLogin){
+        this.$router.push('/feature')
+        this.$store.commit("handleEnterFeature",index)
+      }else{
+        this.handleToLogin()
+      }
+    }
   },
 };
 </script>

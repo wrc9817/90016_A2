@@ -15,7 +15,7 @@ export default {
   methods:{
     init(){
       this.$store.replaceState(Object.assign({},this.$store.state,JSON.parse(localStorage.getItem("store"))))
-      window.addEventListener("load",()=>{
+      window.addEventListener("beforeunload",()=>{
         localStorage.setItem("store",JSON.stringify(this.$store.state))
       })
       this.$store.dispatch("fetchComments")
@@ -31,13 +31,16 @@ export default {
       .then((res)=>{
         this.$store.commit("handleCommentDetail",res.data.data)
       })
-    }
+    },
+
   },
   watch:{
     $route(to,from){
       if(to.path=='/detail'){
         this.fetchcommentAndReply()
         this.$store.dispatch("fetchReplies")
+      }else if(to.path="/feature"){
+        this.$store.dispatch("fetchFeature")
       }
     },
   }

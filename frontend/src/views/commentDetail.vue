@@ -1,8 +1,8 @@
 <template>
   <el-row justify="center" :gutter="0" class="comment-body">
     <el-col :span="18">
-      <el-row :gutter="20">
-        <el-col :span="16">
+      <el-row>
+        <el-col :span="24">
           <el-card shadow="always">
             <div class="header">
               <div class="title">{{ detail.title }}</div>
@@ -33,7 +33,7 @@
               <div class="reply-title">Comment<span class="comment-count">{{replies.length}}</span></div>
               <div class="block">
                 <div class="avatar">
-                  <el-avatar :src="userInfo.avatar"></el-avatar>
+                  <el-avatar :src="detail.avatar?detail.avatar:'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">></el-avatar>
                 </div>
                 <div
                   class="reply-block"
@@ -67,9 +67,6 @@
               <Reply v-for="item in replies" :key="item" :detail="item"></Reply>
             </div>
           </el-card>
-        </el-col>
-        <el-col :span="8">
-          <el-card></el-card>
         </el-col>
       </el-row>
     </el-col>
@@ -205,6 +202,7 @@ export default {
   border-bottom: 1px solid #eee;
 }
 .block {
+  width:50%;
   display: flex;
   align-items: flex-start;
 }

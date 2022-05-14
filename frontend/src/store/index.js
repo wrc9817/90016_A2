@@ -26,6 +26,11 @@ export const store = createStore({
     },
     replies:[],
     audit:false,
+    featureId:null,
+    featureDetail:{
+      title:null,
+      content:null,
+    },
   },
   getters: {
   },
@@ -64,6 +69,12 @@ export const store = createStore({
     },
     handleOpenAudit(state,payload){
       state.audit = payload
+    },
+    handleEnterFeature(state,payload){
+      state.featureId = payload
+    },
+    handleFeatureDetail(state,payload){
+      state.featureDetail = payload
     }
   },
   actions: {
@@ -98,6 +109,21 @@ export const store = createStore({
           commit("handleReplies",res.data.data)
         }
         
+      })
+    },
+    fetchFeature({
+      state,commit
+    }){
+      var params = {
+        featureId:state.featureId
+      }
+      instance.get('/feature',{
+        params
+      })
+      .then((res)=>{
+        if(res.data.status==200){
+          commit("handleFeatureDetail",res.data.data)
+        }
       })
     }
   },
