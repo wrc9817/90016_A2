@@ -3,6 +3,11 @@ import App from './App.vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import './assets/font/iconfont.css'
+import VideoPlayer from 'vue-video-player'
+
+// require videojs style
+import 'video.js/dist/video-js.css'
+
 import 'hover.css'
 import * as icons from '@element-plus/icons-vue'
 
@@ -12,6 +17,7 @@ import {
     initRouteGuard
 } from './init/routeGuard'
 
+
 function bootStrap(){
     const app = createApp(App)
     Object.keys(icons).forEach(key => {
@@ -20,6 +26,7 @@ function bootStrap(){
     app.use(store)
     app.use(router)
     app.use(ElementPlus)
+    app.use(VideoPlayer)
     app.mount('#app')
     initRouteGuard(router)
 }

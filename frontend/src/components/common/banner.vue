@@ -3,7 +3,10 @@
     <el-col :span="4" class="home">
       <span class="btn clickable" @click="handleHome">Protect The Species</span>
     </el-col>
-    <el-col :span="2" class="userInfo-wrapper" :offset="16">
+    <el-col :span="2">
+      <span class="clickable about" @click="handleConclusion">About</span>
+    </el-col>
+    <el-col :span="2" class="userInfo-wrapper" :offset="14">
       <div v-if="!isLogin">
         <span class="login clickable" @click="RouterToLogin">LOGIN/SIGNUP</span>
       </div>
@@ -90,6 +93,9 @@ export default {
         this.RouterToLogin()
       }
     },
+    handleConclusion(){
+      this.$router.push('/conclusion')
+    }
   },
   computed: {
     isAdmin:function(){
@@ -156,6 +162,9 @@ color:white;
 }
 
 .post:hover{
+  color:white;
+}
+.about{
   color:white;
 }
 </style>

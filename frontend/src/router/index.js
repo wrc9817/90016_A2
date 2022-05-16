@@ -4,6 +4,7 @@ import Layout from "../components/layout/layout";
 import Login from "../views/login.vue";
 import CommentDetail from "../views/commentDetail.vue";
 import Feature from '../views/feature.vue'
+import Conclusion from '../views/conclusion.vue'
 const routes = [
   {
     path: "/",
@@ -21,6 +22,10 @@ const routes = [
       {
         path:'/feature',
         component:Feature
+      },
+      {
+        path:'/conclusion',
+        component:Conclusion
       }
     ],
   },

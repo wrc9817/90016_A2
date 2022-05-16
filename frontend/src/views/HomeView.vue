@@ -1,8 +1,21 @@
 <template>
   <el-row justify="center" class="body">
     <el-col :span="18">
-      <div class="carousel-pic">
-        <el-carousel
+      <el-row :gutter="40">
+        <el-col :span="24" class="carousel-pic">
+          <div class="video-wrapper" v-loading="loading">
+            <iframe
+              ref="iframe"
+              width="1080"
+              height="450"
+              src="https://www.youtube.com/embed/PTa357_PGUw"
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <!-- <el-carousel
           indicator-position="outside"
           :interval="4000"
           type="card"
@@ -11,10 +24,8 @@
           <el-carousel-item v-for="item in videoList" :key="item">
             <img :src="item" class="img" />
           </el-carousel-item>
-        </el-carousel>
-      </div>
-      <div class="video"></div>
-      <el-row class="comments" :gutter="40">
+        </el-carousel> -->
+        </el-col>
         <el-col :span="16" v-if="comments">
           <Comment
             v-for="(item, index) in viewMoreCount"
@@ -37,8 +48,16 @@
           </div>
         </el-col>
         <el-col :span="8">
-          <el-card class="menu-wrapper"> 
-          <div class="clickable menu-item" v-for="item,index in characteristic" :key="item" @click="handleEnterFeature(index+1)">{{item}}</div>
+          <el-card class="menu-wrapper">
+            <div class="title">Characteristic</div>
+            <div
+              class="clickable menu-item"
+              v-for="(item, index) in characteristic"
+              :key="item"
+              @click="handleEnterFeature(index + 1)"
+            >
+              {{ item }}
+            </div>
           </el-card>
         </el-col>
       </el-row>
@@ -53,20 +72,14 @@ export default {
   components: {
     Comment,
   },
+  mounted() {
+    this.handleIframeLoading();
+  },
   data() {
     return {
       viewMoreCount: 1,
       showViewMore: true,
-      videoList: [
-        require("../assets/img/1.jpg"),
-        require("../assets/img/2.jpg"),
-        require("../assets/img/3.jpg"),
-        require("../assets/img/4.jpg"),
-        require("../assets/img/5.jpg"),
-        require("../assets/img/6.jpg"),
-        require("../assets/img/7.jpg"),
-        require("../assets/img/8.jpg"),
-      ],
+      loading: false,
       characteristic: [
         "Giant Panda’s habits",
         "Wild distribution of giant pandas",
@@ -81,18 +94,31 @@ export default {
     isLogin: function () {
       return localStorage.getItem("isLogin");
     },
-    isAdmin:function(){
-      return this.$store.state.userInfo.isAdmin==1?true:false
+    isAdmin: function () {
+      return this.$store.state.userInfo.isAdmin == 1 ? true : false;
     },
     comments: function () {
       this.viewMoreCount =
         this.$store.state.comments && this.$store.state.comments.length < 4
           ? this.$store.state.comments.length
           : 4;
-        return this.$store.state.comments;
+      return this.$store.state.comments;
     },
   },
   methods: {
+    handleIframeLoading() {
+      this.loading = true;
+      const iframe = this.$refs.iframe;
+      if (iframe.attachEvent) {
+        iframe.attachEvent("onload", () => {
+          this.loading = false;
+        });
+      } else {
+        iframe.onload = () => {
+          this.loading = false;
+        };
+      }
+    },
     handleViewMore() {
       if (this.viewMoreCount + 5 > this.comments.length) {
         this.viewMoreCount = this.comments.length;
@@ -104,14 +130,14 @@ export default {
     handleToLogin() {
       this.$router.push("/login");
     },
-    handleEnterFeature(index){
-      if(this.isLogin){
-        this.$router.push('/feature')
-        this.$store.commit("handleEnterFeature",index)
-      }else{
-        this.handleToLogin()
+    handleEnterFeature(index) {
+      if (this.isLogin) {
+        this.$router.push("/feature");
+        this.$store.commit("handleEnterFeature", index);
+      } else {
+        this.handleToLogin();
       }
-    }
+    },
   },
 };
 </script>
@@ -119,7 +145,7 @@ export default {
 .body {
   /* background: black; */
   /* padding: 20px 0; */
-  padding:20px 0;
+  padding: 20px 0;
 }
 
 .menu-wrapper {
@@ -137,5 +163,14 @@ export default {
   padding: 20px;
   font-size: 20px;
   font-weight: bold;
+}
+.title {
+  padding: 10px 0 20px 0;
+  font-size: 20px;
+  font-weight: bold;
+  border-bottom: 1px solid grey;
+}
+.video-wrapper {
+  padding: 0 0 10px 0;
 }
 </style>
