@@ -19,6 +19,10 @@ function createLoginGuard(router){
         next()
       }else if(to.path=='/login'){
         next()
+      }else if(to.path=='/feature'){
+        next()
+      }else if(to.path=="/conclusion"){
+        next()
       }else{
         next({
           path:'/login'

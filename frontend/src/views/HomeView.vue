@@ -131,12 +131,8 @@ export default {
       this.$router.push("/login");
     },
     handleEnterFeature(index) {
-      if (this.isLogin) {
         this.$router.push("/feature");
         this.$store.commit("handleEnterFeature", index);
-      } else {
-        this.handleToLogin();
-      }
     },
   },
 };

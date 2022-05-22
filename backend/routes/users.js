@@ -121,7 +121,7 @@ router.get('/', function(req, res, next) {
 // 更新用户信息
 router.put('/', function(req, res, next) {
   var param = req.body.data
-  var sql = "UPDATE `A2`.`User` SET `age` ="+param.age+", `gender` = "+param.gender+",`first_name`="+param.first_name+",`last_name`="+param.last_name+",`location`="+param.location+" WHERE (`id` = "+param.id+");"
+  var sql = "UPDATE `A2`.`User` SET `age` ="+param.age+", `gender` = "+param.gender+",`first_name`='"+param.first_name+"',`last_name`='"+param.last_name+"',`location`="+param.location+" WHERE (`id` = "+param.id+");"
   new Promise(function(resolve,reject){
     querySQL(sql,(e)=>{
     if(e){
